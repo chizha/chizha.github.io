@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鸡蛋卷手工坊 - 在线下单</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        /* 返回按钮样式 */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8f9fa;
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 15px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+        
+        .back-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        /* 订单表单区域 */
+        .order-form {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            color: #333;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* 提交按钮 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #667eea;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 产品网格布局 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .product-card h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .product-card p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        /* 总价和预计时间显示区域 */
+        .total-display, .time-display {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .total-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        
+        .time-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #f57c00;
+        }
+        
+        /* 错误消息 */
+        .error-message {
+            display: none;
+            background: #ffebee;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #d32f2f;
+            border-left: 5px solid #d32f2f;
+        }
+        
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← 返回排队信息</a>
+        
+        <div class="header">
+            <h1>📝 填写订单信息</h1>
+            <p>鸡蛋卷手工坊 - 在线下单</p>
+        </div>
+
+        <div class="order-form" id="orderForm">
+            <div class="form-group">
+                <label for="customerName">👤 顾客姓名</label>
+                <input type="text" id="customerName" placeholder="请输入您的姓名" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">📱 手机号码</label>
+                <input type="tel" id="phone" placeholder="请输入您的手机号" required>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <h3>🥚 原味蛋卷</h3>
+                    <p>12元/盒</p>
+                    <input type="number" id="originalQty" min="0" value="0" placeholder="数量">
+                </div>
+                
+                <div class="product-card">
+                    <h3>🍘 紫菜肉松凤凰卷</h3>
+                    <p>12元/盒</p>
+                    <input type="number" id="seaweedQty" min="0" value="0" placeholder="数量">
+                </div>
+                
+                <div class="product-card">
+                    <h3>🥥 椰蓉椰丝凤凰卷</h3>
+                    <p>12元/盒</p>
+                    <input type="number" id="coconutQty" min="0" value="0" placeholder="数量">
+                </div>
+                
+                <div class="product-card">
+                    <h3>📦 总盒数</h3>
+                    <p>自动计算</p>
+                    <input type="number" id="totalOrderBoxes" readonly value="0">
+                </div>
+            </div>
+            
+            <div class="total-display">
+                <div>💰 订单总价</div>
+                <div id="totalPrice" class="total-value">0 元</div>
+            </div>
+            
+            <div class="time-display">
+                <div>⏰ 预计完成时间</div>
+                <div id="estimatedTime" class="time-value">请先选择产品数量</div>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <button id="submitBtn" class="btn">✅ 提交订单</button>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>正在提交订单...</p>
+        </div>
+
+        <div class="footer">
+            <p>Powered by vika维格表 | 数据实时同步</p>
+        </div>
+    </div>
+
+    <script>
+        // 配置信息
+        const VIKA_CONFIG = {
+            datasheetId: 'dstdZLRwtDlCi4AyKa',
+            apiToken: 'uskLW8N76RCrShK1OZUpPEP',
+            viewId: 'viwUP6lh3f5q2'
+        };
+
+        // 制作参数
+        const PRODUCTION_CONFIG = {
+            avgMinutesPerBox: 8.5,  // 平均每盒制作时间（分钟）
+            machines: 3,            // 制作机器数量
+            avgMinutesPerOrder: 2   // 每单基础准备时间（分钟）
+        };
+
+        // 当前排队数据（从API获取）
+        let currentQueue = {
+            queueCount: 0,
+            totalBoxes: 0
+        };
+
+        // 产品价格
+        const PRICES = {
+            original: 12,
+            seaweed: 12,
+            coconut: 12
+        };
+
+        // 显示错误信息
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+            console.error(message);
+        }
+
+        // 隐藏错误信息
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('order.html 初始化...');
+            
+            // 加载当前排队数据
+            loadQueueData();
+            
+            // 监听数量变化
+            document.getElementById('originalQty').addEventListener('input', calculateTotal);
+            document.getElementById('seaweedQty').addEventListener('input', calculateTotal);
+            document.getElementById('coconutQty').addEventListener('input', calculateTotal);
+            
+            // 提交订单
+            document.getElementById('submitBtn').addEventListener('click', submitOrder);
+        });
+
+        // 加载排队数据
+        async function loadQueueData() {
+            try {
+                const response = await fetch(
+                    `https://api.vika.cn/fusion/v1/datasheets/${VIKA_CONFIG.datasheetId}/records?viewId=${VIKA_CONFIG.viewId}&fieldKey=name`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${VIKA_CONFIG.apiToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success === true) {
+                    // 计算总盒数
+                    let totalBoxes = 0;
+                    let queueCount = 0;
+                    
+                    if (data.data?.records && data.data.records.length > 0) {
+                        data.data.records.forEach(record => {
+                            const original = parseInt(record.fields["原味数量"]) || 0;
+                            const seaweed = parseInt(record.fields["紫菜数量"]) || 0;
+                            const coconut = parseInt(record.fields["椰蓉数量"]) || 0;
+                            const status = record.fields["状态"];
+                            
+                            if (status === '排队中') {
+                                queueCount++;
+                                totalBoxes += (original + seaweed + coconut);
+                            }
+                        });
+                    }
+                    
+                    // 更新排队数据
+                    currentQueue.queueCount = queueCount;
+                    currentQueue.totalBoxes = totalBoxes;
+                    
+                } else {
+                    console.error('加载排队数据失败，使用默认值');
+                }
+                
+            } catch (error) {
+                console.error('加载排队数据失败:', error);
+            }
+        }
+
+        // 计算总盒数和价格
+        function calculateTotal() {
+            const original = parseInt(document.getElementById('originalQty').value) || 0;
+            const seaweed = parseInt(document.getElementById('seaweedQty').value) || 0;
+            const coconut = parseInt(document.getElementById('coconutQty').value) || 0;
+            
+            const totalBoxes = original + seaweed + coconut;
+            const totalPrice = (original * PRICES.original) + (seaweed * PRICES.seaweed) + (coconut * PRICES.coconut);
+            
+            document.getElementById('totalOrderBoxes').value = totalBoxes;
+            document.getElementById('totalPrice').textContent = totalPrice + ' 元';
+            
+            // 计算预计完成时间
+            if (totalBoxes > 0) {
+                calculateEstimatedTime(totalBoxes);
+            } else {
+                document.getElementById('estimatedTime').textContent = '请先选择产品数量';
+            }
+            
+            return { totalBoxes, totalPrice };
+        }
+
+        // 计算预计完成时间
+        function calculateEstimatedTime(userBoxes) {
+            // 当前排队时间
+            const currentWait = Math.ceil(currentQueue.totalBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines);
+            
+            // 新增订单时间
+            const newOrderTime = Math.ceil(userBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines);
+            
+            // 总等待时间
+            const totalWait = currentWait + newOrderTime;
+            
+            // 计算完成时间
+            const now = new Date();
+            const finishTime = new Date(now.getTime() + totalWait * 60000);
+            
+            // 格式化显示
+            const formattedTime = finishTime.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            
+            document.getElementById('estimatedTime').textContent = formattedTime;
+            return { finishTime, formattedTime, totalWait };
+        }
+
+        // 计算预计制作用时
+        function calculateProductionTime(totalBoxes) {
+            const productionMinutes = Math.ceil(
+                PRODUCTION_CONFIG.avgMinutesPerOrder + 
+                (totalBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines)
+            );
+            
+            return productionMinutes;
+        }
+
+        // 生成取货码
+        function generatePickupCode() {
+            const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            
+            const letter = letters[Math.floor(Math.random() * letters.length)];
+            const num1 = numbers[Math.floor(Math.random() * numbers.length)];
+            const num2 = numbers[Math.floor(Math.random() * numbers.length)];
+            const num3 = numbers[Math.floor(Math.random() * numbers.length)];
+            
+            return `${letter}-${num1}${num2}${num3}`;
+        }
+
+        // 提交订单到vika维格表
+        async function submitOrder() {
+            const customerName = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const { totalBoxes, totalPrice } = calculateTotal();
+            
+            // 验证表单
+            if (totalBoxes <= 0) {
+                showError('请至少选择一种蛋卷');
+                return;
+            }
+            
+            if (!customerName) {
+                showError('请填写顾客姓名');
+                return;
+            }
+            
+            if (!phone) {
+                showError('请填写手机号码');
+                return;
+            }
+            
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                showError('请输入正确的手机号码');
+                return;
+            }
+            
+            try {
+                // 显示加载状态
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '提交中...';
+                
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                loadingIndicator.style.display = 'block';
+                
+                hideError();
+                
+                // 计算预计完成时间
+                const { finishTime, formattedTime, totalWait } = calculateEstimatedTime(totalBoxes);
+                const estimatedTimeTimestamp = finishTime.getTime();
+                
+                // 计算预计制作用时
+                const productionTime = calculateProductionTime(totalBoxes);
+                
+                // 生成取货码
+                const pickupCode = generatePickupCode();
+                
+                // 获取商品数量
+                const originalQty = parseInt(document.getElementById('originalQty').value) || 0;
+                const seaweedQty = parseInt(document.getElementById('seaweedQty').value) || 0;
+                const coconutQty = parseInt(document.getElementById('coconutQty').value) || 0;
+                
+                // 构建API请求数据
+                const orderData = {
+                    records: [{
+                        fields: {
+                            "顾客姓名": customerName,
+                            "手机号码": phone,
+                            "原味数量": originalQty,
+                            "紫菜数量": seaweedQty,
+                            "椰蓉数量": coconutQty,
+                            "状态": "排队中",
+                            "预计完成时间": estimatedTimeTimestamp,
+                            "预计制作用时": productionTime,
+                            "总等待时间": totalWait,
+                            "取货码": pickupCode
+                        }
+                    }],
+                    fieldKey: "name"
+                };
+                
+                console.log('提交订单数据:', orderData);
+                console.log('取货码:', pickupCode);
+                
+                // 提交到vika维格表
+                const response = await fetch(
+                    `https://api.vika.cn/fusion/v1/datasheets/${VIKA_CONFIG.datasheetId}/records?viewId=${VIKA_CONFIG.viewId}&fieldKey=name`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${VIKA_CONFIG.apiToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(orderData)
+                    }
+                );
+                
+                const result = await response.json();
+                console.log('提交响应:', result);
+                
+                if (response.ok && result.success === true) {
+                    // 获取订单记录ID
+                    const recordId = result.data.records[0].recordId;
+                    
+                    // 🔥 保存订单信息到localStorage - 这是关键修复！
+                    const orderInfo = {
+                        recordId: recordId,
+                        pickupCode: pickupCode,
+                        customerName: customerName,
+                        phone: phone,
+                        originalQty: originalQty,
+                        seaweedQty: seaweedQty,
+                        coconutQty: coconutQty,
+                        totalBoxes: totalBoxes,
+                        totalPrice: totalPrice,
+                        estimatedTime: formattedTime,
+                        productionTime: productionTime,
+                        orderTime: new Date().toISOString()
+                    };
+                    
+                    console.log('保存到localStorage的数据:', orderInfo);
+                    localStorage.setItem('lastOrder', JSON.stringify(orderInfo));
+                    
+                    // 验证保存
+                    const savedData = localStorage.getItem('lastOrder');
+                    console.log('验证保存的数据:', savedData);
+                    
+                    // 跳转到success页面
+                    window.location.href = 'success.html';
+                    
+                } else {
+                    throw new Error(`提交失败: ${result.message || '未知错误'}`);
+                }
+                
+            } catch (error) {
+                console.error('提交失败:', error);
+                
+                // 显示错误
+                showError('提交失败: ' + error.message);
+                
+                // 恢复按钮状态
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ 提交订单';
+                
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                loadingIndicator.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

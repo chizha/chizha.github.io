@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单提交成功 - 鸡蛋卷手工坊</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        /* 成功图标 */
+        .success-icon {
+            text-align: center;
+            font-size: 4em;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        /* 订单卡片 */
+        .order-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .order-info {
+            margin-bottom: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            font-weight: 600;
+        }
+        
+        /* 商品明细样式 */
+        .product-details {
+            margin: 10px 0 15px 0;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .product-details-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2196F3;
+            font-size: 1.1em;
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-name {
+            color: #555;
+        }
+        
+        .product-qty {
+            font-weight: bold;
+            color: #2196F3;
+        }
+        
+        .product-total-boxes {
+            text-align: right;
+            font-weight: 600;
+            margin-top: 8px;
+            color: #555;
+            padding-top: 8px;
+            border-top: 2px solid #ddd;
+        }
+        
+        /* 取货码 */
+        .pickup-code {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .pickup-number {
+            font-size: 3em;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin: 10px 0;
+        }
+        
+        /* 预计完成时间 */
+        .estimated-time {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .time-number {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        /* 状态跟踪 */
+        .status-timeline {
+            margin: 25px 0;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .status-item.active {
+            background: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .status-icon.waiting {
+            background: #ff9800;
+        }
+        
+        .status-icon.making {
+            background: #2196F3;
+        }
+        
+        .status-icon.ready {
+            background: #4CAF50;
+        }
+        
+        .status-details h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .status-details p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* 按钮 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            margin: 10px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-blue {
+            background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .btn-purple {
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.2);
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #667eea;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* 完成效果 */
+        .completion-effect {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 声音开关 */
+        .sound-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        /* 刷新指示 */
+        .refresh-indicator {
+            text-align: center;
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        /* 自动刷新开关 */
+        .refresh-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        /* 订单状态说明 */
+        .status-note {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✅</div>
+        
+        <div class="header">
+            <h1>订单提交成功！</h1>
+            <p>您的订单已进入制作队列</p>
+        </div>
+
+        <div id="orderContent">
+            <!-- 订单信息 -->
+            <div class="order-card">
+                <h2 style="text-align:center; margin-bottom:20px;">📋 订单详情</h2>
+                
+                <div class="order-info">
+                    <div class="info-row">
+                        <div class="info-label">顾客姓名</div>
+                        <div class="info-value" id="customerName">--</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">手机号码</div>
+                        <div class="info-value" id="phone">--</div>
+                    </div>
+                    
+                    <!-- 商品明细 -->
+                    <div class="product-details" id="productDetailsContainer">
+                        <div class="product-details-title">📦 商品明细</div>
+                        <div id="productDetails">
+                            <!-- 商品明细将在这里动态生成 -->
+                        </div>
+                        <div id="productTotalBoxes" class="product-total-boxes">
+                            共 0 盒
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">总盒数</div>
+                        <div class="info-value" id="totalBoxes">0 盒</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">订单金额</div>
+                        <div class="info-value" id="totalPrice">0 元</div>
+                    </div>
+                </div>
+                
+                <!-- 取货码 -->
+                <div class="pickup-code">
+                    <div>📦 取货码</div>
+                    <div id="pickupCode" class="pickup-number">J-596</div>
+                    <div>请截图保存此取货码</div>
+                </div>
+                
+                <!-- 预计完成时间 -->
+                <div class="estimated-time">
+                    <div>⏰ 预计完成时间</div>
+                    <div id="estimatedTime" class="time-number">2025/12/24 13:32</div>
+                    <div>页面将自动更新订单状态</div>
+                </div>
+            </div>
+            
+            <!-- 状态跟踪 -->
+            <div class="order-card">
+                <h2 style="text-align:center; margin-bottom:20px;">📈 订单状态跟踪</h2>
+                
+                <div class="status-timeline">
+                    <!-- 状态1：排队中 -->
+                    <div class="status-item active" id="statusWaiting">
+                        <div class="status-icon waiting">1</div>
+                        <div class="status-details">
+                            <h3>排队中</h3>
+                            <p>订单已提交，等待制作</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 状态2：制作中 -->
+                    <div class="status-item" id="statusMaking">
+                        <div class="status-icon making">2</div>
+                        <div class="status-details">
+                            <h3>制作中</h3>
+                            <p>师傅正在制作您的蛋卷</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 状态3：已完成 -->
+                    <div class="status-item" id="statusReady">
+                        <div class="status-icon ready">3</div>
+                        <div class="status-details">
+                            <h3>已完成</h3>
+                            <p>您的蛋卷已制作完成，请凭取货码取货</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 自动刷新开关 -->
+                <div class="refresh-toggle">
+                    <input type="checkbox" id="autoRefresh" checked>
+                    <label for="autoRefresh">自动刷新订单状态（每30秒）</label>
+                </div>
+                
+                <div class="refresh-indicator" id="refreshTime">
+                    最后刷新: --
+                </div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <button onclick="checkOrderStatus()" class="btn btn-blue">
+                🔄 手动刷新状态
+            </button>
+            
+            <button onclick="window.location.href='order.html'" class="btn btn-purple">
+                📝 继续下单
+            </button>
+            
+            <a href="index.html" class="btn">
+                🏠 返回首页
+            </a>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>正在获取订单状态...</p>
+        </div>
+        
+        <!-- 完成提示 -->
+        <div class="order-card" id="completionNotice" style="display:none;">
+            <div style="text-align:center;">
+                <div style="font-size:3em; color:#4CAF50; margin-bottom:10px;">🎉</div>
+                <h2 style="color:#4CAF50;">您的蛋卷已制作完成！</h2>
+                <p style="margin:10px 0;">请凭取货码到柜台取货</p>
+                <div id="pickupCodeFinal" style="font-size:2em; font-weight:bold; margin:15px 0;">J-596</div>
+                <p style="color:#666; font-size:0.9em;">感谢您的光临，欢迎再次下单！</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>鸡蛋卷手工坊 | 实时订单跟踪系统</p>
+        </div>
+    </div>
+
+    <script>
+        // 产品名称和价格配置
+        const PRODUCTS = [
+            { id: 'original', name: '🥚 原味蛋卷', price: 12 },
+            { id: 'seaweed', name: '🍘 紫菜肉松卷', price: 12 },
+            { id: 'coconut', name: '🥥 椰蓉椰丝卷', price: 12 }
+        ];
+
+        // 订单信息
+        let orderInfo = null;
+        let refreshInterval = null;
+        let autoRefreshEnabled = true;
+        let completionAlerted = false;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('success.html 初始化...');
+            
+            // 从localStorage获取订单信息
+            const savedOrder = localStorage.getItem('lastOrder');
+            if (savedOrder) {
+                try {
+                    orderInfo = JSON.parse(savedOrder);
+                    console.log('从localStorage获取的订单信息:', orderInfo);
+                    
+                    if (orderInfo) {
+                        displayOrderInfo();
+                    }
+                } catch (error) {
+                    console.error('解析localStorage数据失败:', error);
+                }
+            } else {
+                // 如果没有订单信息，尝试从URL参数获取
+                const urlParams = new URLSearchParams(window.location.search);
+                const orderId = urlParams.get('orderId');
+                
+                if (orderId) {
+                    console.log('从URL获取订单ID:', orderId);
+                } else {
+                    // 跳回下单页面
+                    alert('未找到订单信息，请重新下单');
+                    window.location.href = 'order.html';
+                }
+                return;
+            }
+            
+            // 设置自动刷新
+            setupAutoRefresh();
+            
+            // 监听自动刷新开关
+            document.getElementById('autoRefresh').addEventListener('change', function() {
+                autoRefreshEnabled = this.checked;
+                if (autoRefreshEnabled && !refreshInterval) {
+                    setupAutoRefresh();
+                } else if (!autoRefreshEnabled && refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                }
+            });
+            
+            // 立即检查一次订单状态
+            checkOrderStatus();
+        });
+
+        // 显示订单信息
+        function displayOrderInfo() {
+            if (!orderInfo) {
+                console.error('orderInfo为空，无法显示订单信息');
+                return;
+            }
+            
+            console.log('显示订单信息:', orderInfo);
+            
+            // 填充基本信息
+            document.getElementById('customerName').textContent = orderInfo.customerName || '--';
+            document.getElementById('phone').textContent = orderInfo.phone || '--';
+            document.getElementById('totalBoxes').textContent = (orderInfo.totalBoxes || 0) + ' 盒';
+            document.getElementById('totalPrice').textContent = (orderInfo.totalPrice || 0) + ' 元';
+            document.getElementById('pickupCode').textContent = orderInfo.pickupCode || 'J-596';
+            document.getElementById('estimatedTime').textContent = orderInfo.estimatedTime || '2025/12/24 13:32';
+            document.getElementById('pickupCodeFinal').textContent = orderInfo.pickupCode || 'J-596';
+            
+            // 显示商品明细
+            displayProductDetails();
+        }
+
+        // 显示商品明细
+        function displayProductDetails() {
+            if (!orderInfo) {
+                console.error('orderInfo为空，无法显示商品明细');
+                return;
+            }
+            
+            const productDetailsDiv = document.getElementById('productDetails');
+            productDetailsDiv.innerHTML = '';
+            
+            // 获取各产品数量
+            const originalQty = orderInfo.originalQty || 0;
+            const seaweedQty = orderInfo.seaweedQty || 0;
+            const coconutQty = orderInfo.coconutQty || 0;
+            
+            console.log('商品数量:', { originalQty, seaweedQty, coconutQty });
+            
+            // 计算总盒数
+            const totalBoxes = originalQty + seaweedQty + coconutQty;
+            document.getElementById('productTotalBoxes').textContent = '共 ' + totalBoxes + ' 盒';
+            
+            // 显示商品明细
+            let hasProducts = false;
+            
+            if (originalQty > 0) {
+                addProductDetail('original', originalQty);
+                hasProducts = true;
+            }
+            
+            if (seaweedQty > 0) {
+                addProductDetail('seaweed', seaweedQty);
+                hasProducts = true;
+            }
+            
+            if (coconutQty > 0) {
+                addProductDetail('coconut', coconutQty);
+                hasProducts = true;
+            }
+            
+            // 如果没有商品，显示提示
+            if (!hasProducts) {
+                productDetailsDiv.innerHTML = '<div style="color:#999; text-align:center;">暂无商品明细</div>';
+            }
+            
+            // 确保商品明细区域可见
+            document.getElementById('productDetailsContainer').style.display = 'block';
+        }
+
+        // 添加单个商品明细
+        function addProductDetail(productId, quantity) {
+            const productDetailsDiv = document.getElementById('productDetails');
+            
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) {
+                console.error('未找到产品:', productId);
+                return;
+            }
+            
+            const productItem = document.createElement('div');
+            productItem.className = 'product-item';
+            
+            const totalPrice = quantity * product.price;
+            
+            productItem.innerHTML = `
+                <div class="product-name">${product.name}</div>
+                <div class="product-qty">${quantity}盒 × ${product.price}元 = ${totalPrice}元</div>
+            `;
+            
+            productDetailsDiv.appendChild(productItem);
+        }
+
+        // 设置自动刷新
+        function setupAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            refreshInterval = setInterval(() => {
+                if (autoRefreshEnabled) {
+                    checkOrderStatus();
+                }
+            }, 30000); // 每30秒刷新一次
+        }
+
+        // 更新刷新时间显示
+        function updateRefreshTime() {
+            const now = new Date();
+            document.getElementById('refreshTime').textContent = 
+                '最后刷新: ' + now.toLocaleTimeString('zh-CN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+        }
+
+        // 检查订单状态
+        async function checkOrderStatus() {
+            if (!orderInfo || !orderInfo.recordId) {
+                console.error('没有订单ID，无法检查状态');
+                return;
+            }
+            
+            try {
+                // 显示加载状态
+                document.getElementById('loadingIndicator').style.display = 'block';
+                
+                // 模拟API调用
+                setTimeout(() => {
+                    // 模拟API响应
+                    const mockStatus = getRandomStatus();
+                    updateOrderStatus(mockStatus);
+                    
+                    // 更新刷新时间
+                    updateRefreshTime();
+                    
+                    // 隐藏加载状态
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('检查订单状态时出错:', error);
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        // 模拟获取随机状态
+        function getRandomStatus() {
+            const currentStatus = document.getElementById('statusWaiting').classList.contains('active') ? '排队中' : 
+                                 document.getElementById('statusMaking').classList.contains('active') ? '制作中' : '已完成';
+            
+            // 模拟状态推进
+            if (currentStatus === '排队中') {
+                return Math.random() > 0.7 ? '制作中' : '排队中';
+            } else if (currentStatus === '制作中') {
+                return Math.random() > 0.7 ? '已完成' : '制作中';
+            } else {
+                return '已完成';
+            }
+        }
+
+        // 更新订单状态显示
+        function updateOrderStatus(status) {
+            console.log('订单状态更新为:', status);
+            
+            // 重置所有状态
+            document.getElementById('statusWaiting').classList.remove('active');
+            document.getElementById('statusMaking').classList.remove('active');
+            document.getElementById('statusReady').classList.remove('active');
+            
+            // 根据状态更新显示
+            if (status === '排队中') {
+                document.getElementById('statusWaiting').classList.add('active');
+            } else if (status === '制作中') {
+                document.getElementById('statusWaiting').classList.add('active');
+                document.getElementById('statusMaking').classList.add('active');
+            } else if (status === '已完成') {
+                document.getElementById('statusWaiting').classList.add('active');
+                document.getElementById('statusMaking').classList.add('active');
+                document.getElementById('statusReady').classList.add('active');
+                
+                // 显示完成提示
+                showCompletionNotice();
+                
+                // 停止自动刷新
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                }
+                
+                // 播放完成提示音
+                if (!completionAlerted) {
+                    playCompletionSound();
+                    completionAlerted = true;
+                }
+            }
+        }
+
+        // 显示完成通知
+        function showCompletionNotice() {
+            const completionNotice = document.getElementById('completionNotice');
+            const orderContent = document.getElementById('orderContent');
+            
+            // 隐藏原有内容
+            orderContent.style.display = 'none';
+            
+            // 显示完成通知
+            completionNotice.style.display = 'block';
+            completionNotice.classList.add('completion-effect');
+        }
+
+        // 播放完成提示音
+        function playCompletionSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(554.37, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+                
+            } catch (error) {
+                console.log('音频播放失败:', error);
+            }
+        }
+
+        // 页面可见性变化处理
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && autoRefreshEnabled) {
+                checkOrderStatus();
+            }
+        });
+    </script>
+</body>
+</html>
