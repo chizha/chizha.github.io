@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>排队信息 - 凤凰卷手工坊</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>排队信息 - 鸡蛋卷手工坊</title>
     <style>
         * { 
             margin: 0; 
@@ -12,39 +12,43 @@
         }
         
         body { 
-            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             min-height: 100vh;
             padding: 20px;
+            -webkit-text-size-adjust: 100%; /* 防止手机端字体缩放 */
         }
         
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background: white;
-            border-radius: 15px;
+            background: rgba(255,255,255,0.98);
+            border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
         }
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding-bottom: 20px;
-            border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
         }
         
         .header h1 {
             color: #2c3e50;
-            font-size: 2.2em;
-            margin-bottom: 8px;
-            font-weight: 600;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            font-weight: 700;
+            line-height: 1.3;
         }
         
         .header p {
             color: #7f8c8d;
             font-size: 1em;
+            font-weight: 400;
         }
         
         /* 今日统计 */
@@ -53,48 +57,57 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 30px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 1px solid #eaeaea;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .date-display {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         
         .date-icon {
-            font-size: 1.5em;
+            font-size: 1.8em;
+            color: #3498db;
         }
         
         .date-info h3 {
             color: #2c3e50;
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
             font-size: 1.1em;
+            font-weight: 600;
         }
         
         .date-info p {
             color: #7f8c8d;
             margin: 0;
-            font-size: 0.9em;
+            font-size: 0.95em;
         }
         
         /* 统计信息 */
         .stats-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 30px;
         }
         
         .stat-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px 15px;
             text-align: center;
-            border: 1px solid #eaeaea;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         
         .stat-card.queue {
@@ -113,12 +126,14 @@
             font-size: 0.9em;
             color: #7f8c8d;
             margin-bottom: 5px;
+            font-weight: 500;
         }
         
         .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin: 10px 0;
+            font-size: 2.2em;
+            font-weight: 800;
+            margin: 8px 0;
+            line-height: 1.2;
         }
         
         .stat-queue {
@@ -135,30 +150,39 @@
         
         .stat-unit {
             color: #7f8c8d;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            font-weight: 500;
         }
         
         /* 排队详情 */
         .queue-details {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 30px;
-            border: 1px solid #eaeaea;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .queue-details h3 {
             color: #2c3e50;
             margin-bottom: 15px;
             font-size: 1.1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .queue-details h3::before {
+            content: "📊";
         }
         
         .detail-item {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0;
+            margin: 12px 0;
             padding: 8px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         .detail-item:last-child {
@@ -167,92 +191,122 @@
         
         .detail-label {
             color: #7f8c8d;
+            font-size: 0.95em;
         }
         
         .detail-value {
             font-weight: 600;
             color: #2c3e50;
+            font-size: 1em;
         }
         
         .time-value {
             color: #e74c3c;
-            font-weight: bold;
+            font-weight: 700;
         }
         
         /* 预计时间 */
         .estimated-time {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 30px;
-            border: 1px solid #eaeea;
-            text-align: center;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .estimated-time h3 {
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 1.1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .estimated-time h3::before {
+            content: "⏰";
         }
         
         .time-display {
             font-size: 1.8em;
-            font-weight: bold;
+            font-weight: 800;
             color: #e74c3c;
             margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
         }
         
         /* 操作按钮 */
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         
         .action-btn {
-            padding: 15px;
-            background: #3498db;
+            padding: 16px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             text-align: center;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
         
         .action-btn:hover {
-            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .action-btn:active {
+            transform: translateY(0);
         }
         
         .action-btn.order {
-            background: #27ae60;
+            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
         
         .action-btn.order:hover {
-            background: #219653;
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
         }
         
         .action-btn.staff {
-            background: #f39c12;
+            background: linear-gradient(135deg, #f39c12 0%, #e08e0b 100%);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
         }
         
         .action-btn.staff:hover {
-            background: #e08e0b;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        
+        .action-btn::before {
+            font-size: 1.2em;
         }
         
         /* 加载动画 */
         .loading {
             text-align: center;
-            padding: 40px;
+            padding: 40px 20px;
         }
         
         .loading-spinner {
-            border: 4px solid #f3f3f3;
+            border: 3px solid rgba(52, 152, 219, 0.1);
             border-radius: 50%;
-            border-top: 4px solid #3498db;
+            border-top: 3px solid #3498db;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
@@ -266,40 +320,196 @@
         
         /* 消息提示 */
         .message {
-            padding: 15px;
-            border-radius: 5px;
+            padding: 12px 16px;
+            border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            font-size: 0.9em;
         }
         
         .message.info {
             background: #d1ecf1;
             color: #0c5460;
+            border: 1px solid #bee5eb;
         }
         
         /* 自动刷新提示 */
         .refresh-info {
             text-align: center;
             color: #7f8c8d;
-            font-size: 0.9em;
+            font-size: 0.85em;
             margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
         
-        /* 响应式设计 */
+        /* 响应式设计 - 手机端优化 */
         @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
             .container {
-                padding: 20px;
+                padding: 20px 15px;
+                border-radius: 16px;
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .header p {
+                font-size: 0.95em;
+            }
+            
+            .today-stats {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .date-icon {
+                font-size: 1.5em;
+            }
+            
+            .date-info h3 {
+                font-size: 1em;
+            }
+            
+            .date-info p {
+                font-size: 0.9em;
             }
             
             .stats-section {
-                grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 10px;
+                margin-bottom: 20px;
             }
+            
+            .stat-card {
+                padding: 15px 10px;
+            }
+            
+            .stat-number {
+                font-size: 1.8em;
+            }
+            
+            .stat-label {
+                font-size: 0.85em;
+            }
+            
+            .stat-unit {
+                font-size: 0.8em;
+            }
+            
+            .queue-details, .estimated-time {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .detail-item {
+                margin: 10px 0;
+                padding: 6px 0;
+            }
+            
+            .detail-label, .detail-value {
+                font-size: 0.9em;
+            }
+            
+            .time-display {
+                font-size: 1.6em;
+                padding: 8px;
+            }
+            
+            .action-btn {
+                padding: 14px;
+                font-size: 1em;
+                border-radius: 8px;
+            }
+        }
+        
+        /* 小屏幕手机优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px 12px;
+                border-radius: 14px;
+            }
+            
+            .header h1 {
+                font-size: 1.4em;
+            }
+            
+            .header p {
+                font-size: 0.9em;
+            }
+            
+            .stats-section {
+                gap: 8px;
+            }
+            
+            .stat-card {
+                padding: 12px 8px;
+            }
+            
+            .stat-number {
+                font-size: 1.6em;
+            }
+            
+            .stat-label {
+                font-size: 0.8em;
+            }
+            
+            .action-btn {
+                padding: 12px;
+                font-size: 0.95em;
+            }
+        }
+        
+        /* 平板和桌面优化 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 600px;
+            }
+            
+            .stats-section {
+                gap: 20px;
+            }
+            
+            .stat-card {
+                padding: 25px 20px;
+            }
+            
+            .stat-number {
+                font-size: 2.5em;
+            }
+        }
+        
+        /* 防止长按菜单 */
+        .no-select {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+        }
+        
+        /* 优化触摸体验 */
+        .touch-optimized {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container no-select touch-optimized">
         <div class="header">
             <h1>排队信息</h1>
             <p>凤凰卷手工坊 - 实时订单状态</p>
@@ -311,7 +521,7 @@
                 <div class="date-icon">📅</div>
                 <div class="date-info">
                     <h3>今日订单统计</h3>
-                    <p id="currentDate">--</p>
+                    <p id="currentDate">2025年12月24日 星期三</p>
                 </div>
             </div>
         </div>
@@ -320,43 +530,43 @@
         <div class="stats-section" id="statsSection">
             <div class="stat-card queue">
                 <div class="stat-label">排队中</div>
-                <div id="queueCount" class="stat-number stat-queue">0</div>
+                <div id="queueCount" class="stat-number stat-queue">5</div>
                 <div class="stat-unit">单</div>
             </div>
             
             <div class="stat-card making">
                 <div class="stat-label">制作中</div>
-                <div id="makingCount" class="stat-number stat-making">0</div>
+                <div id="makingCount" class="stat-number stat-making">1</div>
                 <div class="stat-unit">单</div>
             </div>
             
             <div class="stat-card complete">
                 <div class="stat-label">已完成</div>
-                <div id="completeCount" class="stat-number stat-complete">0</div>
+                <div id="completeCount" class="stat-number stat-complete">1</div>
                 <div class="stat-unit">单</div>
             </div>
         </div>
 
         <!-- 排队详情 -->
         <div class="queue-details" id="queueDetails">
-            <h3>📊 当前排队详情</h3>
+            <h3>当前排队详情</h3>
             <div class="detail-item">
                 <div class="detail-label">排队订单数</div>
-                <div id="queueOrders" class="detail-value">0 单</div>
+                <div id="queueOrders" class="detail-value">5 单</div>
             </div>
             <div class="detail-item">
                 <div class="detail-label">排队总盒数</div>
-                <div id="queueBoxes" class="detail-value">0 盒</div>
+                <div id="queueBoxes" class="detail-value">10 盒</div>
             </div>
             <div class="detail-item">
                 <div class="detail-label">当前排队时间</div>
-                <div id="queueTime" class="detail-value time-value">0 分钟</div>
+                <div id="queueTime" class="detail-value time-value">29 分钟</div>
             </div>
         </div>
 
         <!-- 预计时间 -->
         <div class="estimated-time" id="estimatedTimeSection">
-            <h3>⏰ 预计制作时间</h3>
+            <h3>预计制作时间</h3>
             <div class="detail-item">
                 <div class="detail-label">每盒制作时间</div>
                 <div class="detail-value">8.5 分钟</div>
@@ -365,8 +575,8 @@
                 <div class="detail-label">制作机器数量</div>
                 <div class="detail-value">3 台</div>
             </div>
-            <div class="time-display" id="estimatedWaitTime">0 分钟</div>
-            <p style="color: #7f8c8d; font-size: 0.9em;">现在下单的预计等待时间</p>
+            <div class="time-display" id="estimatedWaitTime">29 分钟</div>
+            <p style="color: #7f8c8d; font-size: 0.9em; text-align: center; margin-top: 8px;">现在下单的预计等待时间</p>
         </div>
 
         <!-- 操作按钮 -->
@@ -396,6 +606,16 @@
             avgMinutesPerOrder: 2   // 每单基础准备时间（分钟）
         };
 
+        // 当前排队数据
+        let currentQueueData = {
+            queueCount: 0,
+            makingCount: 0,
+            completeCount: 0,
+            queueOrders: 0,
+            queueBoxes: 0,
+            queueTime: 0
+        };
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             console.log('index.html 初始化...');
@@ -413,9 +633,25 @@
             // 加载排队数据
             loadQueueData();
             
+            // 添加触摸优化
+            addTouchOptimization();
+            
             // 每30秒自动刷新
             setInterval(loadQueueData, 30000);
         });
+
+        // 添加触摸优化
+        function addTouchOptimization() {
+            // 防止双击放大
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
 
         // 判断是否为今天
         function isToday(timestamp) {
@@ -432,6 +668,8 @@
         // 加载排队数据
         async function loadQueueData() {
             try {
+                console.log('正在加载排队数据...');
+                
                 const response = await fetch(
                     `https://api.vika.cn/fusion/v1/datasheets/${VIKA_CONFIG.datasheetId}/records?viewId=${VIKA_CONFIG.viewId}&fieldKey=name`,
                     {
@@ -516,10 +754,10 @@
             // 更新预计等待时间
             document.getElementById('estimatedWaitTime').textContent = queueTime + ' 分钟';
             
-            // 如果没有排队订单，隐藏排队详情
+            // 如果没有排队订单，显示友好提示
             if (queueOrders === 0) {
                 document.getElementById('queueDetails').innerHTML = `
-                    <h3>📊 当前排队详情</h3>
+                    <h3>当前排队详情</h3>
                     <div style="text-align:center; padding:20px; color:#7f8c8d;">
                         <div style="font-size:2em; margin-bottom:10px;">🎉</div>
                         <p>当前没有排队订单</p>
