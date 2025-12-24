@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鸡蛋卷手工坊 - 在线下单</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>填写订单信息 - 鸡蛋卷手工坊</title>
     <style>
         * { 
             margin: 0; 
@@ -12,285 +12,576 @@
         }
         
         body { 
-            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
             padding: 20px;
         }
         
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255,255,255,0.98);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
         }
         
         .header {
             text-align: center;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
         }
         
         .header h1 {
-            color: #764ba2;
-            font-size: 2.2em;
-            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 1.6em;
+            margin-bottom: 5px;
+            font-weight: 700;
         }
         
         .header p {
-            color: #666;
+            color: #7f8c8d;
+            font-size: 1em;
         }
         
-        /* 返回按钮样式 */
         .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: #f8f9fa;
-            color: #555;
-            border: 1px solid #ddd;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(0,0,0,0.1);
             border-radius: 8px;
-            padding: 10px 15px;
             text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 20px;
-            transition: all 0.2s ease;
+            color: #2c3e50;
+            font-size: 0.9em;
+            transition: all 0.3s;
         }
         
         .back-btn:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        /* 订单表单区域 */
-        .order-form {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-        
+        /* 表单样式 */
         .form-group {
             margin-bottom: 20px;
         }
         
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
+            color: #2c3e50;
             font-weight: 600;
-            color: #555;
+            font-size: 0.95em;
         }
         
-        input, select {
+        .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 2px solid #e9ecef;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 1em;
+            transition: border-color 0.3s;
             background: white;
-            color: #333;
-            transition: border 0.3s, box-shadow 0.3s;
         }
         
-        input:focus, select:focus {
-            border-color: #667eea;
+        .form-control:focus {
+            border-color: #3498db;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
         
-        /* 提交按钮 */
-        .btn {
-            display: block;
-            width: 100%;
+        /* 产品选择 */
+        .products-section {
+            margin-bottom: 25px;
+        }
+        
+        .product-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .product-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+        }
+        
+        .product-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .quantity-btn:hover {
+            background: #f8f9fa;
+            border-color: #3498db;
+        }
+        
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .quantity-input {
+            flex: 1;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .quantity-input:read-only {
+            background: #f8f9fa;
+            cursor: default;
+        }
+        
+        /* 订单汇总 */
+        .summary-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .total-price {
+            color: #e74c3c;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+        
+        /* 时间估算 */
+        .time-estimate {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffeaa7 100%);
+            border: 1px solid #ffd54f;
+            border-radius: 10px;
             padding: 15px;
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            margin-bottom: 25px;
+        }
+        
+        .time-estimate h4 {
+            color: #d84315;
+            margin-bottom: 10px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .estimated-time {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: #e74c3c;
+            margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        /* 按钮 */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
         
-        .btn:hover {
+        .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
         }
         
-        .btn:active {
+        .submit-btn:active {
             transform: translateY(0);
         }
         
-        .btn:disabled {
-            background: #cccccc;
+        .submit-btn:disabled {
+            background: #95a5a6;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
         
-        /* 加载动画 */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid #667eea;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* 产品网格布局 */
-        .product-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        /* 消息提示 */
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
             margin-bottom: 20px;
-        }
-        
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .product-card h3 {
-            color: #764ba2;
-            margin-bottom: 10px;
-        }
-        
-        .product-card p {
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
-        /* 总价和预计时间显示区域 */
-        .total-display, .time-display {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .total-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #1976d2;
-        }
-        
-        .time-value {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #f57c00;
-        }
-        
-        /* 错误消息 */
-        .error-message {
-            display: none;
-            background: #ffebee;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            color: #d32f2f;
-            border-left: 5px solid #d32f2f;
-        }
-        
-        /* 页脚 */
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
             font-size: 0.9em;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+        
+        /* 响应式设计 - 手机端优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+                border-radius: 16px;
+                max-width: 100%;
+                margin: 0 auto 20px;
+            }
+            
+            .header {
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.4em;
+            }
+            
+            .header p {
+                font-size: 0.9em;
+            }
+            
+            .back-btn {
+                top: 15px;
+                left: 15px;
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .product-item {
+                padding: 15px;
+                margin-bottom: 12px;
+            }
+            
+            .product-name {
+                font-size: 1em;
+            }
+            
+            .product-price {
+                font-size: 0.95em;
+                margin-bottom: 12px;
+            }
+            
+            .quantity-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1em;
+            }
+            
+            .quantity-input {
+                font-size: 1em;
+            }
+            
+            .summary-section {
+                padding: 15px;
+                margin: 20px 0;
+            }
+            
+            .estimated-time {
+                font-size: 1.3em;
+                padding: 8px;
+            }
+            
+            .submit-btn {
+                padding: 14px;
+                font-size: 1em;
+                border-radius: 8px;
+            }
+        }
+        
+        /* 小屏幕手机优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px 12px;
+                border-radius: 14px;
+            }
+            
+            .header h1 {
+                font-size: 1.3em;
+            }
+            
+            .product-item {
+                padding: 12px;
+            }
+            
+            .quantity-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .quantity-input {
+                font-size: 0.95em;
+            }
+            
+            .submit-btn {
+                padding: 12px;
+                font-size: 0.95em;
+            }
+        }
+        
+        /* 平板和桌面优化 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 600px;
+            }
+        }
+        
+        /* 防止长按菜单 */
+        .no-select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* 优化触摸体验 */
+        .touch-optimized {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 滚动优化 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 表单验证样式 */
+        .form-control.error {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+        
+        .form-control.valid {
+            border-color: #27ae60;
+        }
+        
+        /* 产品图片占位符 */
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+        }
+        
+        /* 订单号显示 */
+        .order-number {
+            text-align: center;
+            padding: 10px;
+            background: #f1f8ff;
+            border-radius: 8px;
+            border: 1px solid #c8e1ff;
+            margin: 20px 0;
+        }
+        
+        .order-number .label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .order-number .value {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #0366d6;
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← 返回排队信息</a>
+    <div class="container no-select touch-optimized">
+        <a href="index.html" class="back-btn"><返回</a>
         
         <div class="header">
-            <h1>📝 填写订单信息</h1>
+            <h1>填写订单信息</h1>
             <p>鸡蛋卷手工坊 - 在线下单</p>
         </div>
-
-        <div class="order-form" id="orderForm">
-            <div class="form-group">
-                <label for="customerName">👤 顾客姓名</label>
-                <input type="text" id="customerName" placeholder="请输入您的姓名" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="phone">📱 手机号码</label>
-                <input type="tel" id="phone" placeholder="请输入您的手机号" required>
-            </div>
-            
-            <div class="product-grid">
-                <div class="product-card">
-                    <h3>🥚 原味蛋卷</h3>
-                    <p>12元/盒</p>
-                    <input type="number" id="originalQty" min="0" value="0" placeholder="数量">
-                </div>
-                
-                <div class="product-card">
-                    <h3>🍘 紫菜肉松凤凰卷</h3>
-                    <p>12元/盒</p>
-                    <input type="number" id="seaweedQty" min="0" value="0" placeholder="数量">
-                </div>
-                
-                <div class="product-card">
-                    <h3>🥥 椰蓉椰丝凤凰卷</h3>
-                    <p>12元/盒</p>
-                    <input type="number" id="coconutQty" min="0" value="0" placeholder="数量">
-                </div>
-                
-                <div class="product-card">
-                    <h3>📦 总盒数</h3>
-                    <p>自动计算</p>
-                    <input type="number" id="totalOrderBoxes" readonly value="0">
-                </div>
-            </div>
-            
-            <div class="total-display">
-                <div>💰 订单总价</div>
-                <div id="totalPrice" class="total-value">0 元</div>
-            </div>
-            
-            <div class="time-display">
-                <div>⏰ 预计完成时间</div>
-                <div id="estimatedTime" class="time-value">请先选择产品数量</div>
-            </div>
-            
-            <div id="errorMessage" class="error-message"></div>
-            
-            <button id="submitBtn" class="btn">✅ 提交订单</button>
+        
+        <!-- 消息提示区域 -->
+        <div id="messageContainer" style="display: none;" class="message"></div>
+        
+        <!-- 顾客信息 -->
+        <div class="form-group">
+            <label for="customerName">顾客姓名</label>
+            <input type="text" id="customerName" class="form-control" placeholder="请输入您的姓名" maxlength="20">
         </div>
-
-        <div class="loading" id="loadingIndicator">
-            <div class="loading-spinner"></div>
-            <p>正在提交订单...</p>
+        
+        <div class="form-group">
+            <label for="phoneNumber">手机号码</label>
+            <input type="tel" id="phoneNumber" class="form-control" placeholder="请输入11位手机号" maxlength="11">
         </div>
-
-        <div class="footer">
-            <p>Powered by vika维格表 | 数据实时同步</p>
+        
+        <!-- 产品选择 -->
+        <div class="products-section">
+            <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1em;">请选择您要订购的产品</h3>
+            
+            <!-- 原味蛋卷 -->
+            <div class="product-item">
+                <div class="product-name">原味蛋卷</div>
+                <div class="product-price">12元/盒</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn minus" data-product="original" disabled>-</button>
+                    <input type="number" id="originalQty" class="quantity-input" value="0" readonly>
+                    <button class="quantity-btn plus" data-product="original">+</button>
+                </div>
+            </div>
+            
+            <!-- 紫菜肉松 -->
+            <div class="product-item">
+                <div class="product-name">紫菜肉松凤凰卷</div>
+                <div class="product-price">12元/盒</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn minus" data-product="seaweed" disabled>-</button>
+                    <input type="number" id="seaweedQty" class="quantity-input" value="0" readonly>
+                    <button class="quantity-btn plus" data-product="seaweed">+</button>
+                </div>
+            </div>
+            
+            <!-- 椰蓉椰丝 -->
+            <div class="product-item">
+                <div class="product-name">椰蓉椰丝凤凰卷</div>
+                <div class="product-price">12元/盒</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn minus" data-product="coconut" disabled>-</button>
+                    <input type="number" id="coconutQty" class="quantity-input" value="0" readonly>
+                    <button class="quantity-btn plus" data-product="coconut">+</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 订单汇总 -->
+        <div class="summary-section">
+            <div class="summary-item">
+                <div class="summary-label">总盒数</div>
+                <div id="totalBoxes" class="summary-value">0 盒</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">订单总价</div>
+                <div id="totalPrice" class="summary-value total-price">0 元</div>
+            </div>
+        </div>
+        
+        <!-- 时间估算 -->
+        <div class="time-estimate">
+            <h4>⏰ 预计完成时间</h4>
+            <div id="estimatedTimeDisplay" class="estimated-time">请先选择产品数量</div>
+            <p style="color: #7f8c8d; font-size: 0.85em; text-align: center; margin-top: 8px;">
+                基于当前排队情况和制作速度估算
+            </p>
+        </div>
+        
+        <!-- 订单号显示 -->
+        <div id="orderNumberDisplay" class="order-number" style="display: none;">
+            <div class="label">您的订单号：</div>
+            <div id="orderNumber" class="value">0000000000</div>
+        </div>
+        
+        <!-- 提交按钮 -->
+        <button id="submitBtn" class="submit-btn" disabled>
+            <span>📋 提交订单</span>
+        </button>
+        
+        <!-- 底部说明 -->
+        <div style="margin-top: 20px; text-align: center; color: #7f8c8d; font-size: 0.8em; padding: 10px;">
+            <p>温馨提示：订单提交后请查看排队信息页面</p>
         </div>
     </div>
 
@@ -301,61 +592,161 @@
             apiToken: 'uskLW8N76RCrShK1OZUpPEP',
             viewId: 'viwUP6lh3f5q2'
         };
-
+        
+        // 产品信息
+        const PRODUCTS = {
+            original: { name: "原味蛋卷", price: 12, quantity: 0, element: null },
+            seaweed: { name: "紫菜肉松", price: 12, quantity: 0, element: null },
+            coconut: { name: "椰蓉椰丝", price: 12, quantity: 0, element: null }
+        };
+        
         // 制作参数
         const PRODUCTION_CONFIG = {
-            avgMinutesPerBox: 8.5,  // 平均每盒制作时间（分钟）
-            machines: 3,            // 制作机器数量
-            avgMinutesPerOrder: 2   // 每单基础准备时间（分钟）
+            avgMinutesPerBox: 8.5,
+            machines: 3
         };
-
-        // 当前排队数据（从API获取）
-        let currentQueue = {
+        
+        // 当前排队数据
+        let queueData = {
             queueCount: 0,
-            totalBoxes: 0
+            makingCount: 0,
+            queueBoxes: 0
         };
-
-        // 产品价格
-        const PRICES = {
-            original: 12,
-            seaweed: 12,
-            coconut: 12
-        };
-
-        // 显示错误信息
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-            }
-            console.error(message);
-        }
-
-        // 隐藏错误信息
-        function hideError() {
-            const errorDiv = document.getElementById('errorMessage');
-            if (errorDiv) {
-                errorDiv.style.display = 'none';
-            }
-        }
-
+        
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             console.log('order.html 初始化...');
             
-            // 加载当前排队数据
+            // 初始化产品元素
+            PRODUCTS.original.element = document.getElementById('originalQty');
+            PRODUCTS.seaweed.element = document.getElementById('seaweedQty');
+            PRODUCTS.coconut.element = document.getElementById('coconutQty');
+            
+            // 绑定按钮事件
+            document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const product = this.getAttribute('data-product');
+                    increaseQuantity(product);
+                });
+            });
+            
+            document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const product = this.getAttribute('data-product');
+                    decreaseQuantity(product);
+                });
+            });
+            
+            // 绑定输入框事件
+            document.getElementById('customerName').addEventListener('input', validateForm);
+            document.getElementById('phoneNumber').addEventListener('input', validateForm);
+            
+            // 绑定提交按钮事件
+            document.getElementById('submitBtn').addEventListener('click', submitOrder);
+            
+            // 加载当前排队数据用于时间估算
             loadQueueData();
             
-            // 监听数量变化
-            document.getElementById('originalQty').addEventListener('input', calculateTotal);
-            document.getElementById('seaweedQty').addEventListener('input', calculateTotal);
-            document.getElementById('coconutQty').addEventListener('input', calculateTotal);
+            // 初始表单验证
+            validateForm();
             
-            // 提交订单
-            document.getElementById('submitBtn').addEventListener('click', submitOrder);
+            // 添加表单验证样式
+            addFormValidation();
         });
-
+        
+        // 添加表单验证样式
+        function addFormValidation() {
+            const nameInput = document.getElementById('customerName');
+            const phoneInput = document.getElementById('phoneNumber');
+            
+            nameInput.addEventListener('blur', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('error');
+                    this.classList.add('valid');
+                } else {
+                    this.classList.remove('valid');
+                }
+            });
+            
+            phoneInput.addEventListener('blur', function() {
+                if (isValidPhone(this.value)) {
+                    this.classList.remove('error');
+                    this.classList.add('valid');
+                } else if (this.value.trim()) {
+                    this.classList.remove('valid');
+                    this.classList.add('error');
+                } else {
+                    this.classList.remove('valid', 'error');
+                }
+            });
+        }
+        
+        // 增加数量
+        function increaseQuantity(product) {
+            PRODUCTS[product].quantity++;
+            PRODUCTS[product].element.value = PRODUCTS[product].quantity;
+            updateUI();
+        }
+        
+        // 减少数量
+        function decreaseQuantity(product) {
+            if (PRODUCTS[product].quantity > 0) {
+                PRODUCTS[product].quantity--;
+                PRODUCTS[product].element.value = PRODUCTS[product].quantity;
+                updateUI();
+            }
+        }
+        
+        // 更新界面
+        function updateUI() {
+            // 更新加减按钮状态
+            Object.keys(PRODUCTS).forEach(product => {
+                const minusBtn = document.querySelector(`.quantity-btn.minus[data-product="${product}"]`);
+                minusBtn.disabled = PRODUCTS[product].quantity === 0;
+            });
+            
+            // 计算总数和总价
+            let totalBoxes = 0;
+            let totalPrice = 0;
+            
+            Object.keys(PRODUCTS).forEach(product => {
+                const quantity = PRODUCTS[product].quantity;
+                totalBoxes += quantity;
+                totalPrice += quantity * PRODUCTS[product].price;
+            });
+            
+            // 更新显示
+            document.getElementById('totalBoxes').textContent = `${totalBoxes} 盒`;
+            document.getElementById('totalPrice').textContent = `${totalPrice} 元`;
+            
+            // 更新预计时间
+            updateEstimatedTime(totalBoxes);
+            
+            // 验证表单
+            validateForm();
+        }
+        
+        // 更新预计时间
+        function updateEstimatedTime(totalBoxes) {
+            const timeDisplay = document.getElementById('estimatedTimeDisplay');
+            
+            if (totalBoxes === 0) {
+                timeDisplay.textContent = "请先选择产品数量";
+                timeDisplay.style.fontSize = "1em";
+                timeDisplay.style.color = "#7f8c8d";
+                return;
+            }
+            
+            // 计算等待时间
+            const queueMinutes = queueData.queueBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines;
+            const newOrderMinutes = totalBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines;
+            const totalMinutes = Math.ceil(queueMinutes + newOrderMinutes);
+            
+            timeDisplay.textContent = `${totalMinutes} 分钟`;
+            timeDisplay.style.fontSize = "1.5em";
+            timeDisplay.style.color = "#e74c3c";
+        }
+        
         // 加载排队数据
         async function loadQueueData() {
             try {
@@ -372,189 +763,112 @@
                 const data = await response.json();
                 
                 if (response.ok && data.success === true) {
-                    // 计算总盒数
-                    let totalBoxes = 0;
-                    let queueCount = 0;
+                    const orders = data.data?.records || [];
+                    let queueBoxes = 0;
                     
-                    if (data.data?.records && data.data.records.length > 0) {
-                        data.data.records.forEach(record => {
-                            const original = parseInt(record.fields["原味数量"]) || 0;
-                            const seaweed = parseInt(record.fields["紫菜数量"]) || 0;
-                            const coconut = parseInt(record.fields["椰蓉数量"]) || 0;
-                            const status = record.fields["状态"];
-                            
-                            if (status === '排队中') {
-                                queueCount++;
-                                totalBoxes += (original + seaweed + coconut);
-                            }
-                        });
-                    }
+                    orders.forEach(order => {
+                        const status = order.fields["状态"] || '排队中';
+                        if (status === '排队中' || status === '制作中') {
+                            const originalQty = parseInt(order.fields["原味数量"]) || 0;
+                            const seaweedQty = parseInt(order.fields["紫菜数量"]) || 0;
+                            const coconutQty = parseInt(order.fields["椰蓉数量"]) || 0;
+                            queueBoxes += originalQty + seaweedQty + coconutQty;
+                        }
+                    });
                     
-                    // 更新排队数据
-                    currentQueue.queueCount = queueCount;
-                    currentQueue.totalBoxes = totalBoxes;
-                    
-                } else {
-                    console.error('加载排队数据失败，使用默认值');
+                    queueData.queueBoxes = queueBoxes;
+                    updateEstimatedTime(getTotalBoxes());
                 }
-                
             } catch (error) {
                 console.error('加载排队数据失败:', error);
             }
         }
-
-        // 计算总盒数和价格
-        function calculateTotal() {
-            const original = parseInt(document.getElementById('originalQty').value) || 0;
-            const seaweed = parseInt(document.getElementById('seaweedQty').value) || 0;
-            const coconut = parseInt(document.getElementById('coconutQty').value) || 0;
-            
-            const totalBoxes = original + seaweed + coconut;
-            const totalPrice = (original * PRICES.original) + (seaweed * PRICES.seaweed) + (coconut * PRICES.coconut);
-            
-            document.getElementById('totalOrderBoxes').value = totalBoxes;
-            document.getElementById('totalPrice').textContent = totalPrice + ' 元';
-            
-            // 计算预计完成时间
-            if (totalBoxes > 0) {
-                calculateEstimatedTime(totalBoxes);
-            } else {
-                document.getElementById('estimatedTime').textContent = '请先选择产品数量';
-            }
-            
-            return { totalBoxes, totalPrice };
+        
+        // 获取总盒数
+        function getTotalBoxes() {
+            return Object.keys(PRODUCTS).reduce((total, product) => {
+                return total + PRODUCTS[product].quantity;
+            }, 0);
         }
-
-        // 计算预计完成时间
-        function calculateEstimatedTime(userBoxes) {
-            // 当前排队时间
-            const currentWait = Math.ceil(currentQueue.totalBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines);
-            
-            // 新增订单时间
-            const newOrderTime = Math.ceil(userBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines);
-            
-            // 总等待时间
-            const totalWait = currentWait + newOrderTime;
-            
-            // 计算完成时间
-            const now = new Date();
-            const finishTime = new Date(now.getTime() + totalWait * 60000);
-            
-            // 格式化显示
-            const formattedTime = finishTime.toLocaleString('zh-CN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            });
-            
-            document.getElementById('estimatedTime').textContent = formattedTime;
-            return { finishTime, formattedTime, totalWait };
-        }
-
-        // 计算预计制作用时
-        function calculateProductionTime(totalBoxes) {
-            const productionMinutes = Math.ceil(
-                PRODUCTION_CONFIG.avgMinutesPerOrder + 
-                (totalBoxes * PRODUCTION_CONFIG.avgMinutesPerBox / PRODUCTION_CONFIG.machines)
-            );
-            
-            return productionMinutes;
-        }
-
-        // 生成取货码
-        function generatePickupCode() {
-            const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-            const numbers = '0123456789';
-            
-            const letter = letters[Math.floor(Math.random() * letters.length)];
-            const num1 = numbers[Math.floor(Math.random() * numbers.length)];
-            const num2 = numbers[Math.floor(Math.random() * numbers.length)];
-            const num3 = numbers[Math.floor(Math.random() * numbers.length)];
-            
-            return `${letter}-${num1}${num2}${num3}`;
-        }
-
-        // 提交订单到vika维格表
-        async function submitOrder() {
+        
+        // 验证表单
+        function validateForm() {
             const customerName = document.getElementById('customerName').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const { totalBoxes, totalPrice } = calculateTotal();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const totalBoxes = getTotalBoxes();
             
-            // 验证表单
-            if (totalBoxes <= 0) {
-                showError('请至少选择一种蛋卷');
+            const isValid = customerName.length >= 2 && 
+                          isValidPhone(phoneNumber) && 
+                          totalBoxes > 0;
+            
+            document.getElementById('submitBtn').disabled = !isValid;
+            return isValid;
+        }
+        
+        // 验证手机号
+        function isValidPhone(phone) {
+            return /^1[3-9]\d{9}$/.test(phone);
+        }
+        
+        // 显示消息
+        function showMessage(message, type = 'info') {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.textContent = message;
+            messageContainer.className = `message ${type}`;
+            messageContainer.style.display = 'block';
+            
+            // 如果是错误消息，3秒后自动隐藏
+            if (type === 'error') {
+                setTimeout(() => {
+                    messageContainer.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // 生成订单号
+        function generateOrderNumber() {
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `${year}${month}${day}${random}`;
+        }
+        
+        // 提交订单
+        async function submitOrder() {
+            if (!validateForm()) {
+                showMessage('请填写完整信息并至少选择一盒产品', 'error');
                 return;
             }
             
-            if (!customerName) {
-                showError('请填写顾客姓名');
-                return;
-            }
-            
-            if (!phone) {
-                showError('请填写手机号码');
-                return;
-            }
-            
-            if (!/^1[3-9]\d{9}$/.test(phone)) {
-                showError('请输入正确的手机号码');
-                return;
-            }
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>⏳ 提交中...</span>';
             
             try {
-                // 显示加载状态
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.disabled = true;
-                submitBtn.textContent = '提交中...';
+                const customerName = document.getElementById('customerName').value.trim();
+                const phoneNumber = document.getElementById('phoneNumber').value.trim();
+                const orderNumber = generateOrderNumber();
                 
-                const loadingIndicator = document.getElementById('loadingIndicator');
-                loadingIndicator.style.display = 'block';
-                
-                hideError();
-                
-                // 计算预计完成时间
-                const { finishTime, formattedTime, totalWait } = calculateEstimatedTime(totalBoxes);
-                const estimatedTimeTimestamp = finishTime.getTime();
-                
-                // 计算预计制作用时
-                const productionTime = calculateProductionTime(totalBoxes);
-                
-                // 生成取货码
-                const pickupCode = generatePickupCode();
-                
-                // 获取商品数量
-                const originalQty = parseInt(document.getElementById('originalQty').value) || 0;
-                const seaweedQty = parseInt(document.getElementById('seaweedQty').value) || 0;
-                const coconutQty = parseInt(document.getElementById('coconutQty').value) || 0;
-                
-                // 构建API请求数据
                 const orderData = {
                     records: [{
                         fields: {
                             "顾客姓名": customerName,
-                            "手机号码": phone,
-                            "原味数量": originalQty,
-                            "紫菜数量": seaweedQty,
-                            "椰蓉数量": coconutQty,
+                            "手机号": phoneNumber,
+                            "原味数量": PRODUCTS.original.quantity.toString(),
+                            "紫菜数量": PRODUCTS.seaweed.quantity.toString(),
+                            "椰蓉数量": PRODUCTS.coconut.quantity.toString(),
+                            "订单编号": orderNumber,
                             "状态": "排队中",
-                            "预计完成时间": estimatedTimeTimestamp,
-                            "预计制作用时": productionTime,
-                            "总等待时间": totalWait,
-                            "取货码": pickupCode
+                            "提交时间": new Date().toISOString(),
+                            "订单总价": (getTotalBoxes() * 12).toString()
                         }
-                    }],
-                    fieldKey: "name"
+                    }]
                 };
                 
-                console.log('提交订单数据:', orderData);
-                console.log('取货码:', pickupCode);
-                
-                // 提交到vika维格表
                 const response = await fetch(
-                    `https://api.vika.cn/fusion/v1/datasheets/${VIKA_CONFIG.datasheetId}/records?viewId=${VIKA_CONFIG.viewId}&fieldKey=name`,
+                    `https://api.vika.cn/fusion/v1/datasheets/${VIKA_CONFIG.datasheetId}/records`,
                     {
                         method: 'POST',
                         headers: {
@@ -565,56 +879,29 @@
                     }
                 );
                 
-                const result = await response.json();
-                console.log('提交响应:', result);
+                const data = await response.json();
                 
-                if (response.ok && result.success === true) {
-                    // 获取订单记录ID
-                    const recordId = result.data.records[0].recordId;
+                if (response.ok && data.success === true) {
+                    // 显示订单号
+                    document.getElementById('orderNumber').textContent = orderNumber;
+                    document.getElementById('orderNumberDisplay').style.display = 'block';
                     
-                    // 🔥 保存订单信息到localStorage - 这是关键修复！
-                    const orderInfo = {
-                        recordId: recordId,
-                        pickupCode: pickupCode,
-                        customerName: customerName,
-                        phone: phone,
-                        originalQty: originalQty,
-                        seaweedQty: seaweedQty,
-                        coconutQty: coconutQty,
-                        totalBoxes: totalBoxes,
-                        totalPrice: totalPrice,
-                        estimatedTime: formattedTime,
-                        productionTime: productionTime,
-                        orderTime: new Date().toISOString()
-                    };
+                    showMessage('🎉 订单提交成功！', 'success');
                     
-                    console.log('保存到localStorage的数据:', orderInfo);
-                    localStorage.setItem('lastOrder', JSON.stringify(orderInfo));
-                    
-                    // 验证保存
-                    const savedData = localStorage.getItem('lastOrder');
-                    console.log('验证保存的数据:', savedData);
-                    
-                    // 跳转到success页面
-                    window.location.href = 'success.html';
+                    // 3秒后跳转到成功页面
+                    setTimeout(() => {
+                        window.location.href = `success.html?orderNumber=${orderNumber}&name=${encodeURIComponent(customerName)}&phone=${phoneNumber}`;
+                    }, 2000);
                     
                 } else {
-                    throw new Error(`提交失败: ${result.message || '未知错误'}`);
+                    throw new Error(data.message || '提交失败');
                 }
                 
             } catch (error) {
-                console.error('提交失败:', error);
-                
-                // 显示错误
-                showError('提交失败: ' + error.message);
-                
-                // 恢复按钮状态
-                const submitBtn = document.getElementById('submitBtn');
+                console.error('提交订单失败:', error);
+                showMessage('提交失败，请稍后重试', 'error');
                 submitBtn.disabled = false;
-                submitBtn.textContent = '✅ 提交订单';
-                
-                const loadingIndicator = document.getElementById('loadingIndicator');
-                loadingIndicator.style.display = 'none';
+                submitBtn.innerHTML = '<span>📋 提交订单</span>';
             }
         }
     </script>
