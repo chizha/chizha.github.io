@@ -513,7 +513,7 @@
                     <div class="product-price">12元/盒</div>
                     <div class="quantity-control">
                         <button class="quantity-btn minus" onclick="changeQuantity('original', -1)">-</button>
-                        <input type="number" id="originalQty" class="quantity-input" value="5" min="0" readonly>
+                        <input type="number" id="originalQty" class="quantity-input" value="0" min="0" readonly>
                         <button class="quantity-btn plus" onclick="changeQuantity('original', 1)">+</button>
                     </div>
                 </div>
@@ -524,7 +524,7 @@
                     <div class="product-price">12元/盒</div>
                     <div class="quantity-control">
                         <button class="quantity-btn minus" onclick="changeQuantity('seaweed', -1)">-</button>
-                        <input type="number" id="seaweedQty" class="quantity-input" value="3" min="0" readonly>
+                        <input type="number" id="seaweedQty" class="quantity-input" value="0" min="0" readonly>
                         <button class="quantity-btn plus" onclick="changeQuantity('seaweed', 1)">+</button>
                     </div>
                 </div>
@@ -535,7 +535,7 @@
                     <div class="product-price">12元/盒</div>
                     <div class="quantity-control">
                         <button class="quantity-btn minus" onclick="changeQuantity('coconut', -1)">-</button>
-                        <input type="number" id="coconutQty" class="quantity-input" value="1" min="0" readonly>
+                        <input type="number" id="coconutQty" class="quantity-input" value="0" min="0" readonly>
                         <button class="quantity-btn plus" onclick="changeQuantity('coconut', 1)">+</button>
                     </div>
                 </div>
@@ -545,18 +545,18 @@
             <div class="summary-section">
                 <div class="summary-row">
                     <div class="summary-label">总盒数</div>
-                    <div id="totalBoxes" class="summary-value">9 盒</div>
+                    <div id="totalBoxes" class="summary-value">0 盒</div>
                 </div>
                 <div class="summary-row">
                     <div class="summary-label">订单总价</div>
-                    <div id="totalPrice" class="summary-value total-price">108 元</div>
+                    <div id="totalPrice" class="summary-value total-price">0 元</div>
                 </div>
             </div>
             
             <!-- 预计时间 -->
             <div class="time-estimate">
                 <div class="time-label">预计完成时间</div>
-                <div id="estimatedTime" class="time-value">计算中...</div>
+                <div id="estimatedTime" class="time-value">请先选择产品数量</div>
                 <div id="finishTime" class="finish-time"></div>
             </div>
             
@@ -598,6 +598,9 @@
             machines: 3,
             bufferTime: 2
         };
+        
+        // 取货码计数器（模拟递增）
+        let pickupCodeCounter = 854; // 从类似图片中的854开始
         
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
@@ -815,14 +818,26 @@
             }
         }
         
-        // 生成取货码
+        // 生成取货码 - 修改为类似"J-854"的格式
         function generatePickupCode() {
-            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let code = '';
-            for (let i = 0; i < 6; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            // 从A-Z中随机选择一个字母
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+            
+            // 从800-999中生成三位数字（模拟递增效果）
+            // 这里使用一个计数器，每次递增1
+            let numberPart = pickupCodeCounter.toString();
+            
+            // 如果是数字小于100，前面补0
+            if (pickupCodeCounter < 100) {
+                numberPart = pickupCodeCounter.toString().padStart(3, '0');
             }
-            return code;
+            
+            // 计数器递增
+            pickupCodeCounter++;
+            
+            // 格式：字母-数字，例如 "J-854"
+            return `${randomLetter}-${numberPart}`;
         }
         
         // 验证表单
@@ -885,7 +900,7 @@
                 const seaweedQty = parseInt(document.getElementById('seaweedQty').value) || 0;
                 const coconutQty = parseInt(document.getElementById('coconutQty').value) || 0;
                 
-                // 生成取货码
+                // 生成取货码（使用新格式）
                 const pickupCode = generatePickupCode();
                 
                 // 计算预计完成时间
