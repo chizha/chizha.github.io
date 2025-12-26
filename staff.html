@@ -115,7 +115,7 @@
             display: none;
         }
         
-        /* 统计信息 */
+        /* 统计信息 - 保持您喜欢的卡片布局 */
         .stats-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -129,6 +129,12 @@
             padding: 20px;
             text-align: center;
             border: 1px solid #eaeaea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         .stat-card.queue {
@@ -428,24 +434,24 @@
             font-weight: 600;
         }
         
-        /* 订单摘要 - 修复布局不协调问题 */
+        /* 订单摘要 - 优化布局确保在小屏幕也能完整显示 */
         .order-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         
         .summary-item {
             background: #f0f7ff;
-            padding: 8px 4px;
+            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 0.85em;
+            font-size: 0.9em;
             text-align: center;
             color: #3498db;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0; /* 防止内容溢出 */
         }
         
         /* 状态操作按钮 */
@@ -640,6 +646,106 @@
             width: 0%;
             transition: width 0.3s;
         }
+        
+        /* 响应式布局 - 手机屏幕适配 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            /* 在小屏幕上统计卡片改为垂直堆叠 */
+            .stats-section {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .filter-section {
+                justify-content: center;
+            }
+            
+            .filter-btn {
+                flex: 1;
+                min-width: 100px;
+                text-align: center;
+            }
+            
+            .batch-section {
+                text-align: center;
+            }
+            
+            .batch-btn {
+                width: 100%;
+            }
+            
+            /* 在手机上调整订单卡片布局 */
+            .order-card {
+                padding: 15px;
+            }
+            
+            /* 在小屏幕上，订单摘要改为垂直排列 */
+            .order-summary {
+                flex-direction: column;
+            }
+            
+            .summary-item {
+                width: 100%;
+                text-align: left;
+                padding: 8px 10px;
+            }
+            
+            .product-list {
+                padding: 10px;
+            }
+            
+            .status-actions {
+                gap: 5px;
+            }
+            
+            .status-btn {
+                padding: 6px 0;
+                font-size: 0.85em;
+            }
+        }
+        
+        /* 小屏幕手机特殊适配 */
+        @media (max-width: 480px) {
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .status-badge {
+                align-self: flex-start;
+            }
+            
+            .customer-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .product-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -667,7 +773,7 @@
         </div>
 
         <div id="content" style="display: none;">
-            <!-- 统计信息 -->
+            <!-- 统计信息 - 保持与图片一致的三个卡片布局 -->
             <div class="stats-section" id="statsSection">
                 <div class="stat-card queue">
                     <div class="stat-label">排队中</div>
@@ -1041,7 +1147,7 @@
             displayOrders();
         }
 
-        // 更新统计数据 - 修复：只统计当天的已完成订单
+        // 更新统计数据 - 只统计当天的已完成订单
         function updateStats() {
             const today = new Date();
             
@@ -1106,7 +1212,7 @@
             });
         }
 
-        // 创建订单卡片 - 修复下单时间显示不协调问题
+        // 创建订单卡片
         function createOrderCard(order) {
             const fields = order.fields;
             const orderId = order.recordId;
@@ -1123,7 +1229,7 @@
             const totalBoxes = originalQty + seaweedQty + coconutQty;
             const totalPrice = totalBoxes * 12; // 每盒12元
             
-            // 格式化下单时间 - 使用更紧凑的格式
+            // 格式化下单时间
             const orderTime = fields["提交时间"] || fields["记录创建时间"] || Date.now();
             const timeObj = new Date(orderTime);
             const month = (timeObj.getMonth() + 1).toString().padStart(2, '0');
@@ -1170,7 +1276,7 @@
                         </div>` : ''}
                     </div>
                     
-                    <!-- 修复下单时间布局不协调问题 -->
+                    <!-- 订单摘要 - 优化为三列布局，在小屏幕上自动换行 -->
                     <div class="order-summary">
                         <div class="summary-item" title="总盒数: ${totalBoxes}盒">总盒数:${totalBoxes}盒</div>
                         <div class="summary-item" title="总金额: ${totalPrice}元">总金额:${totalPrice}元</div>
