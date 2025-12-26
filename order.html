@@ -36,7 +36,7 @@
             min-height: calc(100vh - 40px);
         }
         
-        /* 标题栏样式 */
+        /* 标题栏样式 - 修改：让"填写订单信息"居中 */
         .header {
             background: white;
             padding: 20px 20px 15px 20px;
@@ -49,7 +49,9 @@
         .header-top {
             display: flex;
             align-items: center;
+            justify-content: center; /* 居中 */
             margin-bottom: 10px;
+            position: relative;
         }
         
         .back-btn {
@@ -59,6 +61,8 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            position: absolute;
+            left: 0;
         }
         
         .back-btn span {
@@ -70,8 +74,7 @@
             font-weight: 600;
             color: #333;
             text-align: center;
-            flex: 1;
-            margin: 0 10px;
+            margin: 0;
         }
         
         .header p {
@@ -214,7 +217,7 @@
             outline: none;
         }
         
-        /* 订单汇总样式 - 修正：与图1保持一致 */
+        /* 订单汇总样式 */
         .summary-section {
             background: white;
             border-radius: 12px;
@@ -253,7 +256,7 @@
             font-size: 20px;
         }
         
-        /* 预计时间样式 - 修正：与图1保持一致 */
+        /* 预计时间样式 */
         .time-estimate {
             background: white;
             border-radius: 12px;
@@ -383,6 +386,10 @@
                 font-size: 18px;
             }
             
+            .back-btn {
+                font-size: 15px;
+            }
+            
             .main-content {
                 padding: 15px 12px;
             }
@@ -411,7 +418,6 @@
             }
         }
         
-        /* 小屏幕特别优化 */
         @media (max-width: 360px) {
             body {
                 padding: 8px;
@@ -429,6 +435,10 @@
             
             .header p {
                 font-size: 12px;
+            }
+            
+            .back-btn {
+                font-size: 14px;
             }
         }
         
@@ -464,7 +474,8 @@
         <!-- 标题栏 -->
         <div class="header">
             <div class="header-top">
-                <a href="index.html" class="back-btn"><span>‹</span> 返回排队信息</a>
+                <!-- 修改：返回排队信息改成返回 -->
+                <a href="index.html" class="back-btn"><span>‹</span> 返回</a>
                 <h1>填写订单信息</h1>
             </div>
             <p>凤凰卷手工坊 - 在线下单</p>
@@ -481,12 +492,14 @@
                 
                 <div class="form-group">
                     <label for="customerName">顾客姓名</label>
-                    <input type="text" id="customerName" class="form-control" placeholder="请输入您的姓名" value="测试5">
+                    <!-- 修改：清空默认值 -->
+                    <input type="text" id="customerName" class="form-control" placeholder="请输入您的姓名" value="">
                 </div>
                 
                 <div class="form-group">
                     <label for="phoneNumber">手机号码</label>
-                    <input type="tel" id="phoneNumber" class="form-control" placeholder="请输入11位手机号" value="13710795022" maxlength="11">
+                    <!-- 修改：清空默认值 -->
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="请输入11位手机号" value="" maxlength="11">
                 </div>
             </div>
             
@@ -528,7 +541,7 @@
                 </div>
             </div>
             
-            <!-- 订单汇总 - 修正为图1样式 -->
+            <!-- 订单汇总 -->
             <div class="summary-section">
                 <div class="summary-row">
                     <div class="summary-label">总盒数</div>
@@ -540,7 +553,7 @@
                 </div>
             </div>
             
-            <!-- 预计时间 - 修正为图1样式 -->
+            <!-- 预计时间 -->
             <div class="time-estimate">
                 <div class="time-label">预计完成时间</div>
                 <div id="estimatedTime" class="time-value">计算中...</div>
@@ -559,9 +572,9 @@
     <script>
         // 产品数据
         const PRODUCTS = {
-            original: { name: "原味蛋卷", price: 12, quantity: 5 },
-            seaweed: { name: "紫菜肉松卷", price: 12, quantity: 3 },
-            coconut: { name: "椰蓉椰丝卷", price: 12, quantity: 1 }
+            original: { name: "原味蛋卷", price: 12, quantity: 0 },
+            seaweed: { name: "紫菜肉松卷", price: 12, quantity: 0 },
+            coconut: { name: "椰蓉椰丝卷", price: 12, quantity: 0 }
         };
         
         // 订单数据
@@ -666,7 +679,7 @@
             return { totalBoxes, totalPrice };
         }
         
-        // 计算预计时间 - 修正：只计算当天订单
+        // 计算预计时间
         async function calculateEstimatedTime() {
             const { totalBoxes } = calculateTotal();
             
@@ -742,7 +755,7 @@
             return `${hours}:${minutes}`;
         }
         
-        // 获取排队数据 - 修正：只获取当天订单
+        // 获取排队数据
         async function getQueueData() {
             try {
                 const response = await fetch(
