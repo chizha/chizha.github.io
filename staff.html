@@ -47,44 +47,57 @@
             font-size: 1em;
         }
         
-        /* 今日订单统计 - 类似图2的样式 */
+        /* 修改：今日订单统计 - 完全按照图片样式 */
         .today-stats {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: #f8f9fa;
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px 30px;
             margin-bottom: 25px;
-            border: 1px solid #dee2e6;
+            border: none; /* 移除边框 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
         
         .stats-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            gap: 10px;
+            margin-bottom: 10px; /* 减少间距 */
+            gap: 12px;
         }
         
         .calendar-icon {
-            width: 24px;
-            height: 24px;
-            background: #e67e22;
-            border-radius: 5px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border: 2px solid #e74c3c; /* 红色边框 */
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #e74c3c; /* 红色文字 */
             font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* 模拟日历图标 */
+        .calendar-icon:before {
+            content: "📅";
         }
         
         .stats-header h2 {
             color: #2c3e50;
-            font-size: 1.2em;
-            font-weight: 600;
+            font-size: 1.8em; /* 增大字体 */
+            font-weight: 700; /* 加粗 */
         }
         
         .today-date {
-            color: #e74c3c;
-            font-weight: 600;
-            font-size: 1.1em;
+            color: #7f8c8d; /* 改为灰色 */
+            font-weight: 500; /* 中等粗细 */
+            font-size: 1.1em; /* 稍大字体 */
         }
         
         /* 统计卡片 - 始终三个并排显示 */
@@ -92,6 +105,8 @@
             display: flex;
             gap: 20px;
             justify-content: space-between;
+            width: 100%;
+            margin-top: 25px;
         }
         
         .stat-card {
@@ -547,10 +562,10 @@
             <p>凤凰卷手工坊 - 订单管理与取货验证</p>
         </div>
 
-        <!-- 今日订单统计 -->
+        <!-- 修改后的今日订单统计 - 与图片完全一致 -->
         <div class="today-stats">
             <div class="stats-header">
-                <div class="calendar-icon">📅</div>
+                <div class="calendar-icon"></div>
                 <h2>今日订单统计</h2>
             </div>
             <div id="todayDate" class="today-date">2025年12月26日 星期五</div>
@@ -604,74 +619,6 @@
             <h2 class="orders-title">当前订单列表 <span id="orderCount">(0)</span></h2>
             <div class="orders-grid" id="ordersGrid">
                 <!-- 订单卡片将通过JavaScript动态生成 -->
-                <!-- 这里显示示例订单 -->
-                <div class="order-card">
-                    <div class="order-header">
-                        <div class="pickup-code">A001</div>
-                        <span class="status-badge status-queue">排队中</span>
-                    </div>
-                    
-                    <div class="customer-info">
-                        <div class="customer-name">张三</div>
-                        <div class="customer-phone">138****1234</div>
-                    </div>
-                    
-                    <div class="product-list">
-                        <div class="product-title">商品明细</div>
-                        <div class="product-item">
-                            <span class="product-name">原味蛋卷</span>
-                            <span class="product-quantity">2盒</span>
-                        </div>
-                        <div class="product-item">
-                            <span class="product-name">紫菜肉松卷</span>
-                            <span class="product-quantity">1盒</span>
-                        </div>
-                    </div>
-                    
-                    <div class="order-summary">
-                        <div class="summary-item" title="总盒数: 3盒">总盒数:3盒</div>
-                        <div class="summary-item" title="总金额: 36元">总金额:36元</div>
-                        <div class="order-time">下单:12/26 10:30</div>
-                    </div>
-                    
-                    <div class="status-actions">
-                        <button class="status-btn queue active">排队中</button>
-                        <button class="status-btn making">制作中</button>
-                        <button class="status-btn complete">已完成</button>
-                    </div>
-                </div>
-                
-                <div class="order-card">
-                    <div class="order-header">
-                        <div class="pickup-code">A002</div>
-                        <span class="status-badge status-making">制作中</span>
-                    </div>
-                    
-                    <div class="customer-info">
-                        <div class="customer-name">李四</div>
-                        <div class="customer-phone">139****5678</div>
-                    </div>
-                    
-                    <div class="product-list">
-                        <div class="product-title">商品明细</div>
-                        <div class="product-item">
-                            <span class="product-name">椰蓉椰丝卷</span>
-                            <span class="product-quantity">2盒</span>
-                        </div>
-                    </div>
-                    
-                    <div class="order-summary">
-                        <div class="summary-item" title="总盒数: 2盒">总盒数:2盒</div>
-                        <div class="summary-item" title="总金额: 24元">总金额:24元</div>
-                        <div class="order-time">下单:12/26 10:45</div>
-                    </div>
-                    
-                    <div class="status-actions">
-                        <button class="status-btn queue">排队中</button>
-                        <button class="status-btn making active">制作中</button>
-                        <button class="status-btn complete">已完成</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -751,13 +698,8 @@
                 allOrders = data.data?.records || [];
                 console.log('获取到的订单数据:', allOrders);
                 
-                // 按创建时间倒序排序（默认排序）
-                allOrders.sort((a, b) => {
-                    const timeA = a.fields["创建时间"] || a.fields["记录创建时间"] || 0;
-                    const timeB = b.fields["创建时间"] || b.fields["记录创建时间"] || 0;
-                    return timeB - timeA;
-                });
-                
+                // 对全部订单按时间倒序排序
+                sortAllOrders();
                 applyFilters();
                 hideMessage();
                 
@@ -765,6 +707,18 @@
                 console.error('加载订单数据失败:', error);
                 showMessage(`❌ 加载失败: ${error.message || '网络错误'}`, 'error');
             }
+        }
+
+        // 对全部订单按时间倒序排序（新的在上，旧的在下）
+        function sortAllOrders() {
+            allOrders.sort((a, b) => {
+                // 优先使用"提交时间"，如果没有则使用"记录创建时间"
+                const timeA = a.fields["提交时间"] || a.fields["记录创建时间"] || 0;
+                const timeB = b.fields["提交时间"] || b.fields["记录创建时间"] || 0;
+                
+                // 倒序排列：时间大的（新的）在前，时间小的（旧的）在后
+                return timeB - timeA;
+            });
         }
 
         // 应用过滤器
@@ -790,7 +744,7 @@
                 });
             }
             
-            // 根据状态应用不同的排序规则
+            // 对过滤后的结果进行排序
             result = sortOrdersByStatus(result, currentFilter);
             
             filteredOrders = result;
@@ -805,22 +759,36 @@
             
             switch(status) {
                 case 'queue':
-                case 'making':
-                    // 排队中和制作中：正序排列（旧的在前）
+                    // 排队中：正序排列（旧的在上，新的在下）
                     return sortedOrders.sort((a, b) => {
-                        const timeA = a.fields["创建时间"] || a.fields["记录创建时间"] || 0;
-                        const timeB = b.fields["创建时间"] || b.fields["记录创建时间"] || 0;
-                        return timeA - timeB;
+                        const timeA = a.fields["提交时间"] || a.fields["记录创建时间"] || 0;
+                        const timeB = b.fields["提交时间"] || b.fields["记录创建时间"] || 0;
+                        return timeA - timeB; // 小的在前，旧的在上
+                    });
+                    
+                case 'making':
+                    // 制作中：正序排列（旧的在上，新的在下）
+                    return sortedOrders.sort((a, b) => {
+                        const timeA = a.fields["提交时间"] || a.fields["记录创建时间"] || 0;
+                        const timeB = b.fields["提交时间"] || b.fields["记录创建时间"] || 0;
+                        return timeA - timeB; // 小的在前，旧的在上
                     });
                     
                 case 'complete':
+                    // 已完成：倒序排列（新的在上，旧的在下）
+                    return sortedOrders.sort((a, b) => {
+                        const timeA = a.fields["提交时间"] || a.fields["记录创建时间"] || 0;
+                        const timeB = b.fields["提交时间"] || b.fields["记录创建时间"] || 0;
+                        return timeB - timeA; // 大的在前，新的在上
+                    });
+                    
                 case 'all':
                 default:
-                    // 已完成和全部订单：倒序排列（新的在前）
+                    // 全部订单：倒序排列（新的在上，旧的在下）
                     return sortedOrders.sort((a, b) => {
-                        const timeA = a.fields["创建时间"] || a.fields["记录创建时间"] || 0;
-                        const timeB = b.fields["创建时间"] || b.fields["记录创建时间"] || 0;
-                        return timeB - timeA;
+                        const timeA = a.fields["提交时间"] || a.fields["记录创建时间"] || 0;
+                        const timeB = b.fields["提交时间"] || b.fields["记录创建时间"] || 0;
+                        return timeB - timeA; // 大的在前，新的在上
                     });
             }
         }
@@ -879,17 +847,17 @@
                 const status = order.fields["状态"] || "排队中";
                 
                 // 绑定排队中按钮
-                document.getElementById(`queueBtn_${orderId}`).addEventListener('click', () => {
+                document.getElementById(`queueBtn_${orderId}`)?.addEventListener('click', () => {
                     updateOrderStatus(orderId, "排队中");
                 });
                 
                 // 绑定制作中按钮
-                document.getElementById(`makingBtn_${orderId}`).addEventListener('click', () => {
+                document.getElementById(`makingBtn_${orderId}`)?.addEventListener('click', () => {
                     updateOrderStatus(orderId, "制作中");
                 });
                 
                 // 绑定已完成按钮
-                document.getElementById(`completeBtn_${orderId}`).addEventListener('click', () => {
+                document.getElementById(`completeBtn_${orderId}`)?.addEventListener('click', () => {
                     updateOrderStatus(orderId, "已完成");
                 });
             });
@@ -1010,6 +978,9 @@
                     if (orderIndex !== -1) {
                         allOrders[orderIndex].fields["状态"] = newStatus;
                     }
+                    
+                    // 重新排序全部订单
+                    sortAllOrders();
                     
                     // 重新应用过滤器
                     applyFilters();
